@@ -5,16 +5,20 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+uint8_t i=0;
+uint8_t j=0;
 INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
 {
+    /* In order to detect unexpected events during development,
+       it is recommended to set a breakpoint on the following instruction.
+    */
    uint8_t nt;
    nt=UART1_ReceiveData8();
    if(nt=='a')
-   {     
-       GPIO_WriteReverse(GPIOB,GPIO_PIN_5);
-       UART1_SendData8('o');
-   }
-     
+     {
+       i=i+1;
+       j=i%2;
+     }
 }
 void main(void)
 {
@@ -27,7 +31,10 @@ void main(void)
   /* Infinite loop */
   while (1)
   {
-                  
+   if(j==0)
+     GPIO_WriteHigh(GPIOB,GPIO_PIN_5);
+   else
+     GPIO_WriteLow(GPIOB,GPIO_PIN_5);                
   }
 
 }
